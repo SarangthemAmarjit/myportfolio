@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myportfolio/pages/dashboard%20copy.dart';
 import 'package:myportfolio/pages/dashboard.dart';
 
 void main() {
@@ -13,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const HomePage2(),
+        home: const HomePage(),
         theme: ThemeData(
           fontFamily: 'KulimPark',
           useMaterial3: false,

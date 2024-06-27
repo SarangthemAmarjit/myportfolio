@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:animations/animations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,13 +10,34 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   TabController? _tabController;
+  int _selectedIndex = 0;
+
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     _tabController = TabController(
       vsync: this,
       length: 5,
     );
+  }
+
+  void _onTabChanged() {
+    setState(() {
+      _selectedIndex = _tabController!.index;
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _tabController?.addListener(_onTabChanged);
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -128,15 +150,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           const SizedBox(height: 20),
                           // TabBarView
                           Expanded(
-                            child: TabBarView(
-                              controller: _tabController!,
-                              children: [
-                                buildHomeTab(isSmallScreen),
-                                buildAboutTab(),
-                                buildServicesTab(),
-                                buildMyWorkTab(),
-                                buildBlogTab(),
-                              ],
+                            child: PageTransitionSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              transitionBuilder: (
+                                Widget child,
+                                Animation<double> primaryAnimation,
+                                Animation<double> secondaryAnimation,
+                              ) {
+                                return FadeThroughTransition(
+                                  fillColor: Colors.white,
+                                  animation: primaryAnimation,
+                                  secondaryAnimation: secondaryAnimation,
+                                  child: child,
+                                );
+                              },
+                              child: IndexedStack(
+                                key: ValueKey<int>(_selectedIndex),
+                                index: _selectedIndex,
+                                children: [
+                                  buildHomeTab(isSmallScreen),
+                                  buildAboutTab(),
+                                  buildServicesTab(),
+                                  buildMyWorkTab(),
+                                  buildBlogTab(),
+                                ],
+                              ),
                             ),
                           ),
                         ],
